@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Query App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .query-input {
+            width: 100%;
+            height: 100px;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .result-table th, .result-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>SQL Query App</h1>
+        <textarea id="query" class="query-input" placeholder="Enter your SQL query..."></textarea>
+        <button id="submit-btn">Submit</button>
+        <h2>Query Results:</h2>
+        <div id="query-results"></div>
+    </div>
+
+    <script>
+        document.getElementById('submit-btn').addEventListener('click', function () {
+            const query = document.getElementById('query').value;
+            fetch('/query', {
+                method: 'POST',
+                body: JSON.stringify({ 'query': query }),  // Wrap the query in an object with key 'query' and stringify it
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const resultsDiv = document.getElementById('query-results');
+                    resultsDiv.innerHTML = '';
+                    if (data.success) {
+                        const table = document.createElement('table');
+                        table.className = 'result-table';
+
+                        // Create table header
+                        const headerRow = table.insertRow();
+                        for (const column of data.columns) {
+                            const th = document.createElement('th');
+                            th.textContent = column;
+                            headerRow.appendChild(th);
+                        }
+
+                        // Populate table rows with data
+                        for (const row of data.rows) {
+                            const tableRow = table.insertRow();
+                            for (const column of Object.keys(row)) {
+                                const cell = tableRow.insertCell();
+                                cell.textContent = row[column];
+                            }
+                        }
+
+                        resultsDiv.appendChild(table);
+                    } else {
+                        resultsDiv.textContent = 'Error: ' + data.error;
+                    }
+                })
+                .catch(error => {
+                    const resultsDiv = document.getElementById('query-results');
+                    resultsDiv.textContent = 'Error: ' + error.message;
+                });
+        });
+    </script>
+</body>
+
+</html>

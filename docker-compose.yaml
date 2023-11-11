@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: Databasename
+      POSTGRES_USER: User
+      POSTGRES_PASSWORD: default
+    ports:
+      - "5432:5432"
+    networks:
+      - backend-network
+
+  data-loader:
+    build: .
+    command: ["python", "data_loader.py"]
+    depends_on:
+      - db
+    networks:
+      - backend-network
+
+  web:
+    build: .
+    ports:
+      - "5002:5002"
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: "postgresql://Databasename:default@db:5432/Databasename"
+    networks:
+      - backend-network
+
+networks:
+  backend-network:
+    driver: bridge

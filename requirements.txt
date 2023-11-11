@@ -1,0 +1,6 @@
+requests
+biopython
+psycopg2-binary
+schedule
+flask
+schedule
