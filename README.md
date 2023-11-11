@@ -5,6 +5,7 @@ This project aimed to develop a robust data loading pipeline for synchronizing p
 
 Architecture
 The project utilizes a containerized cluster with the following components:
+
 <img width="1371" alt="Screenshot 2023-11-10 at 5 47 37 PM" src="https://github.com/Akki0605/Data-Loading_Pipeline/assets/106899639/291f093e-213f-4485-ad15-98dfcafdb47f">
 
 
